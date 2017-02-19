@@ -1,0 +1,480 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Drupal 8 &amp; Docker - Kamal ZAIRIG</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/sky.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+		<style>
+		.medium-font{
+			font-size:26px !important;
+		}
+		.dockerfile-directive{
+			color:blue;
+			text-transform: uppercase !important;
+		}
+		.contact-container{
+			display: table !important;
+		}
+		.contact-icon{
+			border: 0px !important;
+		}
+		.in-middle{
+			display:table-cell !important;
+ 			vertical-align:middle !important;
+ 			margin-left: 5px !important;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3>Créer un environnement de développement Drupal 8 avec Docker !</h3>
+				</section>
+				<section>
+					<h3>A propos de moi</h3>
+					<br/>
+					<ul>
+						<li>Kamal ZAIRIG</li>
+						<li>Web Consultant : Drupal et Frameworks PHP.</li>
+						<li>Acquia Certified Developer.</li>
+						<li>Zend Framework Certified Developer.</li>
+						<li>+8 ans sur PHP et +6 ans sur Drupal.</li>
+					</ul>
+					<div class="contact-container"><img class="contact-icon" src="/assets/img/twitter-icon.png"/><span class="in-middle">@kamalzairig</span>&nbsp;&nbsp;<img class="contact-icon" src="/assets/img/gmail-icon.png"/><span class="in-middle">kamal.zairig@gmail.com</span></div>
+				</section>
+				<section>
+					<h3>Nouveautés Drupal 8</h3>
+				</section>
+				<section>
+					<h3>Twig: Le nouveau moteur de templating</h3>
+					<br/>
+					<img src="/assets/img/drupal8/twig.jpg"/>
+				</section>
+				<section>
+					<h3>Mobile First</h3>
+					<br/>
+					<img style="width:400px;" src="/assets/img/drupal8/mobile.jpg"/>
+				</section>
+				<section>
+					<h3>Support Multilingue</h3>
+					<br/>
+					<img src="/assets/img/drupal8/i18n.png"/>
+				</section>
+				<section>
+					<h3>Gestion des configurations</h3>
+					<br/>
+					<img src="/assets/img/drupal8/configuration.png"/>
+				</section>
+				<section>
+					<h3>Wysiwyg: CKEditor</h3>
+					<br/>
+					<img src="/assets/img/drupal8/wysiwyg.png"/>
+				</section>
+				<section>
+					<h3>Quick Edit</h3>
+					<br/>
+					<img src="/assets/img/drupal8/quick-edit.png"/>
+				</section>
+				<section>
+					<h3>Images responsives</h3>
+					<br/>
+					<img src="/assets/img/drupal8/responsive-image.png"/>
+				</section>
+				<section>
+					<h3>Nouveaux types de champs</h3>
+					<br/>
+					<img src="/assets/img/drupal8/fields.png"/>
+				</section>
+				<section>
+					<h3>Views dans le Core</h3>
+					<br/>
+					<img src="/assets/img/drupal8/views.png"/>
+				</section>
+				<section>
+					<h3>Web Services REST dans le Core</h3>
+					<br/>
+					<img src="/assets/img/drupal8/webservices.png"/>
+				</section>
+				<section>
+					<h3>Vitesse de chargement: Big Pipe (Expérimental)</h3>
+					<br/>
+					<img style="width:700px;" src="/assets/img/drupal8/big-pipe.gif"/>
+				</section>
+				<section>
+					<h3>Standards PHP</h3>
+					<br/>
+					<ul>
+						<li>Implémentation de la norme PSR-4.</li>
+						<li>Composer.</li>
+						<li>PHPUnit.</li>
+						<li>Guzzle.</li>
+						<li>Zend Feed.</li>
+						<li>...</li>
+					</ul>
+				</section>
+				<section>
+					<h4>Comment accelèrer le processus de livraison de nos services (Sites Drupal 8) vers le client final ?</h4>
+				</section>
+				<section>
+					<h3>Devops</h3>
+					<br/>
+					<img src="/assets/img/devops.png"/>
+				</section>
+				<section>
+					<h3>Devops: Problèmes</h3>
+					<br/>
+					<ul>
+						<li class="medium-font">Conflicts entre Développeurs et Opérateurs = Pas de communication.</li>
+						<li class="medium-font">Le développeur crée le <i>Changement</i>, alors que l'opérateur cherche la <i>Stabilité</i>.</li>
+						<li class="medium-font">La configuration des machines de développeurs est différente de celles de production.</li>
+						<li class="medium-font">Le tuning des machines de production se fait régulièrement et sans documentation.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Devops: Solutions</h3>
+					<br/>
+					<ul>
+						<li class="medium-font">Infrastructure as Code.</li>
+						<li class="medium-font">Le développeur est aussi impliqué dans le processus de déploiement et maintenance de l'application.</li>
+						<li class="medium-font">L'opérateur informe le développeur sur les changements d'infrastructure.</li>
+						<li class="medium-font">Automatisation = Continuous Integration / Continous Delivery.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Devops: C'est quoi ?</h3>
+					<br/>
+					<ul>
+						<p>C'est une combinaison de cultures, pratiques et outils qui permettent à une organisation de livrer des produits rapidement et d'une manière efficace.</p>
+					</ul>
+				</section>
+			  <section>
+				  <h4><strong>Docker</strong> est l'un des outils qui ont révolutionné le monde Devops depuis plus de 3 ans.</h4>
+			  </section>
+				<section>
+					<h3>Docker</h3>
+					<br/>
+					<img src="/assets/img/intro.jpg"/>
+				</section>
+				<section>
+					<h3>C'est quoi Docker ?</h3>
+					<br/>
+					<img src="/assets/img/logo.png"/>
+				</section>
+				<section>
+					<h3>C'est quoi Docker ?</h3>
+					<br/>
+					<ul>
+						<li>Démarre comme projet interne chez DotCloud (PaaS)</li>
+						<li>Open Source en 2013</li>
+						<li>Basé sur LXC (LinuX Containers)</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Comprendre Docker</h3>
+					<br/>
+					<ul>
+						<li>Contenaires</li>
+						<li>Images</li>
+						<li>Registry (Docker Hub)</li>
+						<li>Architecture</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Contenaires</h3>
+					<br/>
+					<ul>
+						<li>Machines virtuelles légères</li>
+						<li>Démarrage instantanné avec moins de RAM</li>
+						<li>Système de fichiers à base de couches: Réduire l'espace disque</li>
+						<li>Contient tout ce qu'il faut: code, runtime, system tools, system libraries</li>
+						<li><strong>"Always run the same"</strong></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Images</h3>
+					<br/>
+					<ul>
+						<li>Système de fichiers + Paramètres à utiliser en runtime: Template</li>
+						<li>Stateless</li>
+						<li>Contenaire = Instance en exécution d'une image</li>
+						<li>Création et partage d'images par des personnes ou entreprises</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker Hub</h3>
+					<br/>
+					<ul>
+						<li>Hub publique: <a href="https://hub.docker.com/" target="_blank">https://hub.docker.com</a></li>
+					  <li>Registre privé: <a href="https://hub.docker.com/_/registry/" target="_blank">https://hub.docker.com/_/registry</a></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Architecture</h3>
+					<img src="/assets/img/architecture.svg"/>
+				</section>
+				<section>
+					<h3>Contenaires vs. VM</h3>
+					<img src="/assets/img/docker-vm.png"/>
+				</section>
+				<section>
+					<h3>Docker Storage Drivers</h3>
+					<br/>
+					<ul>
+						<li>Docker supporte plusieurs Storage Drivers</li>
+						<li>AUFS est le plus stable et le plus supporté par la communauté</li>
+						<li>Autres Drivers sont supportés: Brtfs, Device mapper, OverlayFS,...</li>
+						<li>Sur un Host basé sur Linux et utilisant AUFS, ces couches se trouvent sur <strong>/var/lib/docker</strong></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker Storage Drivers</h3>
+					<br/>
+					<ul>
+						<li style="font-size:30px;">Les images sont composées de couches Read-Only représentants des diffs du système de fichiers.</li>
+						<li style="font-size:30px;">Lors de la création d'un contenaire on ajoute une couche d'écriture légère en haut de la pile.</li>
+					</ul>
+					<img src="/assets/img/storage-layers.png"/>
+				</section>
+				<section>
+					<h3>Docker Storage Drivers</h3>
+					<br/>
+					<img src="/assets/img/sharing-layers.jpg"/>
+				</section>
+				<section>
+					<h3>Volumes</h3>
+					<br/>
+					<ul>
+						<li>Lors de la suppression d'un contenaire, toutes les données de la couche RW sont supprimées.</li>
+						<li>Un Volume de données est un répertoire attaché à un ou plusieurs contenaires, permettant la persistance des données.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Volumes</h3>
+					<br/>
+					<img src="/assets/img/shared-volume.jpg"/>
+				</section>
+				<section>
+					<h3>Installation</h3>
+					<br/>
+					<ul>
+						<li><a href="https://docs.docker.com/docker-for-mac/" target="_blank">https://docs.docker.com/docker-for-mac/</a></li>
+						<li><a href="https://docs.docker.com/docker-for-windows/" target="_blank">https://docs.docker.com/docker-for-windows/</a></li>
+						<li><a href="https://docs.docker.com/toolbox/overview/" target="_blank">Docker ToolBox (Legacy sur Mac et Windows)</a></li>
+						<li><a href="https://docs.docker.com/engine/installation/linux/ubuntu/" target="_blank">https://docs.docker.com/engine/installation/linux/ubuntu/</a></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Demo</h3>
+					<br/>
+					<ul>
+						<li><a href="http://www.play-with-docker.com" target="_blank">Play-With-Docker.com</a></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker CLI</h3>
+					<br/>
+					<ul>
+						<li>docker pull nginx</li>
+						<li>docker run --name web -d -p 8080:80 nginx</li>
+						<li>docker ps</li>
+						<li>docker stop web</li>
+						<li>docker start web</li>
+						<li>docker exec -it web bash</li>
+						<li>docker rm web</li>
+						<li>docker images</li>
+						<li>docker rmi nginx -f</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Dockerfile</h3>
+					<br/>
+					<ul>
+						<li>Docker peut construire automatiquement des images en se basant sur les instructions d'un <strong>Dockerfile</strong>.</li>
+						<li>un Dockerfile est un fichier texte qui contient les équivalents de toutes les commandes pour assembler une image.</li>
+						<li>La commande <strong>docker build</strong> construit une image à partir d'un Dockerfile et un <i>contexte</i>.</li>
+						<li>Ce contexte peut être soit un PATH local ou un URL Git.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Dockerfile: Instructions</h3>
+					<br/>
+					<ul>
+						<li class="medium-font"><span class="dockerfile-directive">From</span>: La première instruction. Identifie l'image à hériter.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Maintainer</span> (deprecated): Informations sur l'auteur de l'image.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Run</span>: Exécute une commande Linux.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Entrypoint</span>: Le script ou application finale pour le boostrapping.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Cmd</span>: Contient les arguments de ENTRYPOINT au format tableau JSON.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Label</span>: Méta-données à propos de l'image comme clé/valeur.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Env</span>: Créer une variable d'environnement.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Copy</span>: Copier des fichiers vers le contenaire.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">ADD</span>: La même chose que COPY, mais supporte les archives et les Urls distants.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Workdir</span>: Impose un répertoire de travail pour l'exécution de commandes.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Expose</span>: Définir les ports exposés par les services du contenaire.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">Volume</span>: Définir des volumes de données.</li>
+					  <li class="medium-font"><span class="dockerfile-directive">User</span>: L'utilisateur qui exécutera les instructions RUN, CMD et ENTRYPOINT.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Dockerfile: Exemple</h3>
+					<img src="/assets/img/dockerfile.png" style="width:600px;"/>
+				</section>
+				<section>
+					<h3>Créer et publier sa propre image</h3>
+					<br/>
+					<ul>
+						<li>vim Dockerfile</li>
+						<li>docker build -t my-custom-image .</li>
+						<li>docker tag $IMAGE_ID $USERNAME/my-custom-image:latest</li>
+						<li>docker login</li>
+						<li>docker push $USERNAME/my-custom-image</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker Compose</h3>
+					<img src="/assets/img/compose-logo.png" style="width:400px;"/>
+				</section>
+				<section>
+					<h3>Docker Compose</h3>
+					<br/>
+					<ul>
+						<li>Définir et éxécuter une application Docker multi-contenaires.</li>
+						<li>Architecture Micro-services</li>
+						<li>Un seul fichier de configuration au format Yaml.</li>
+						<li>Une seule commande pour créer et démarrer tous les services</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker Compose: Installation</h3>
+					<br/>
+					<ul>
+							<li style="font-size:30px;">curl -L https://github.com/docker/compose/releases/download/1.10.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose</li>
+							<li style="font-size:30px;">chmod +x /usr/local/bin/docker-compose</li>
+					</ul>
+				</section>
+				<section>
+					<h3>docker-compose.yml</h3>
+					<img src="/assets/img/compose-yml.png"/>
+				</section>
+				<section>
+					<h3>Docker Compose: CLI</h3>
+					<br/>
+					<ul>
+						<li class="medium-font"><strong>docker-compose build</strong>: Pour recréer les contenaires.</li>
+						<li class="medium-font"><strong>docker-compose up -d</strong>: Démarre tous les services en mode démon.</li>
+						<li class="medium-font"><strong>docker-compose ps</strong>: Liste les contenaires.</li>
+						<li class="medium-font"><strong>docker-compose exec &lt;service&gt; COMMAND</strong>: Exécute des commandes sur un contenaire démarré.</li>
+						<li class="medium-font"><strong>docker-compose run &lt;service&gt; COMMAND</strong>: Exécute une seule commande sur un service même en arrêt.</li>
+						<li class="medium-font"><strong>docker-compose down</strong>: Arrête et supprime les contenaires en exécution.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker Compose: Drupal 8 Use Case</h3>
+					<br/>
+					<p>Créer un environnement de développement de Drupal 8 basé sur Docker Compose, qui définit les 3 services suivants:</p>
+					<ul>
+						<li><strong>Web</strong>: Basé sur Apache-PHP.</li>
+						<li><strong>Db</strong>: Basé sur MySQL.</li>
+						<li><strong>PhpMyAdmin</strong>: Pour avoir un accès simple à la base de donnée.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Drupal 8 Use Case : Etapes</h3>
+					<br/>
+					<ul>
+						<li><a href="https://github.com/zairig/docker-compose-drupal8" target="_blank">https://github.com/zairig/docker-compose-drupal8</a></li>
+						<li><a href="https://hub.docker.com/r/kamalzairig/drupal8/" target="_blank">https://hub.docker.com/r/kamalzairig/drupal8/</a></li>
+					</ul>
+				</section>
+				<section>
+					<h3>Docker Compose: Drupal 8 Use Case</h3>
+					<br/>
+					<ul>
+						<li class="medium-font">git clone https://github.com/zairig/docker-compose-drupal8.git</li>
+						<li class="medium-font">cd docker-compose-drupal8/src</li>
+						<li class="medium-font">wget https://ftp.drupal.org/files/projects/drupal-8.2.6.tar.gz</li>
+						<li class="medium-font">tar xvfz drupal-8.2.6.tar.gz</li>
+						<li class="medium-font">mv drupal-8.2.6 drupal</li>
+						<li class="medium-font">cp drupal/sites/default/default.settings.php drupal/sites/default/settings.php</li>
+						<li class="medium-font">chmod -R 777 drupal/sites/default/</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Bonus: VHosts</h3>
+					<br/>
+					<ul>
+						<li>Utiliser l'image <strong><a href="https://hub.docker.com/r/jwilder/nginx-proxy/" target="_blank">jwilder/nginx-proxy</a></strong></li>
+						<li>Ajouter le nouveau service <i>nginx-proxy</i></li>
+						<li>Ajouter aux services souhaités la variable d'environnement <i>VIRTUAL_HOST</i></li>
+						<li>Déclarer les VHosts dans le fichier /etc/hosts</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Avantages de cette démarche</h3>
+					<br/>
+					<ul>
+						<li><strong>Portabilité</strong>: les fichiers de configuration sont suffisants pour lancer l'application.</li>
+						<li><strong>Performance</strong>: Optimisation de la gestion de la mémoire et de l'espace disque.</li>
+						<li><strong>Rapidité</strong>: Démarrage et arrêt instantannés des contenaires.</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Back to Drupal 8</h3>
+					<br/>
+					<p>Configuration Management</p>
+				</section>
+				<section>
+					<h3>What is next?</h3>
+					<br/>
+					<ul>
+						<li>Automatisation de l'installation avec Drush Make.</li>
+						<li>Utiliser Nginx et PHP-FPM (v 7.1).</li>
+						<li>Intégration de XDebug.</li>
+						<li>Installation de Drupal Console.</li>
+						<li>Upgrade vers Docker Compose 2.</li>
+						<li>Centraliser les logs avec Logstash.</li>
+						<li>...</li>
+					</ul>
+				</section>
+				<section>
+					<p style="font-size: 100px;">Merci :)</p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+				transition: 'convex',
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
